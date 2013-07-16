@@ -682,6 +682,10 @@ class Client(httplib2.Http):
             else:
                 headers.update(req.to_header())
 
+        if 'Authorization' in headers:
+            if isinstance(headers['Authorization'], unicode):
+                headers['Authorization'] = headers['Authorization'].encode('utf-8')
+
         return httplib2.Http.request(self, uri, method=method, body=body,
             headers=headers, redirections=redirections,
             connection_type=connection_type)
