@@ -616,7 +616,7 @@ class Client(httplib2.Http):
     """OAuthClient is a worker to attempt to execute a request."""
 
     def __init__(self, consumer, token=None, cache=None, timeout=None,
-        proxy_info=None):
+                 proxy_info=None, ca_certs=None):
 
         if consumer is not None and not isinstance(consumer, Consumer):
             raise ValueError("Invalid consumer.")
@@ -628,7 +628,11 @@ class Client(httplib2.Http):
         self.token = token
         self.method = SignatureMethod_HMAC_SHA1()
 
-        httplib2.Http.__init__(self, cache=cache, timeout=timeout, proxy_info=proxy_info)
+        kwargs = dict(cache=cache, timeout=timeout, proxy_info=proxy_info)
+        if ca_certs:
+            kwargs['ca_certs'] = ca_certs
+
+        httplib2.Http.__init__(self, **kwargs)
 
     def set_signature_method(self, method):
         if not isinstance(method, SignatureMethod):
